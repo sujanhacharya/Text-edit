@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="15" fill="#161b1d"/>
+  <circle cx="49" cy="15" r="6" fill="#2448d8"/>
+  <text x="30" y="46" text-anchor="middle" font-family="'Iowan Old Style', Charter, Georgia, 'Times New Roman', serif" font-size="38" font-weight="700" font-style="italic" letter-spacing="-5" fill="#f4f2eb">ip</text>
+</svg>

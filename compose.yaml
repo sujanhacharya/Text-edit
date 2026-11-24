@@ -1,0 +1,47 @@
+services:
+  inkpatch:
+    build:
+      context: .
+      args:
+        TESSERACT_LANGS: "${TESSERACT_LANGS:-eng}"
+        EXTRA_FONTS: "${EXTRA_FONTS:-}"
+    image: inkpatch:latest
+    ports:
+      - target: 8000
+        published: "${INKPATCH_PORT:-8000}"
+        host_ip: "${INKPATCH_BIND:-127.0.0.1}"
+        protocol: tcp
+    environment:
+      TEXTEDIT_DATA_DIR: /data
+      TEXTEDIT_MAX_SIDE: "${TEXTEDIT_MAX_SIDE:-2400}"
+      TEXTEDIT_MAX_UPLOAD_MB: "${TEXTEDIT_MAX_UPLOAD_MB:-20}"
+      TEXTEDIT_MAX_LINES: "${TEXTEDIT_MAX_LINES:-600}"
+      TEXTEDIT_TTL_HOURS: "${TEXTEDIT_TTL_HOURS:-96}"
+      TEXTEDIT_COOKIE_SECURE: "${TEXTEDIT_COOKIE_SECURE:-0}"
+      TEXTEDIT_OCR_TARGET_SIDE: "${TEXTEDIT_OCR_TARGET_SIDE:-2200}"
+      TEXTEDIT_OCR_MIN_CONFIDENCE: "${TEXTEDIT_OCR_MIN_CONFIDENCE:-30}"
+      TEXTEDIT_OCR_LINE_RECOVERY: "${TEXTEDIT_OCR_LINE_RECOVERY:-1}"
+      TEXTEDIT_OCR_RECOVERY_MAX_LINES: "${TEXTEDIT_OCR_RECOVERY_MAX_LINES:-60}"
+      TEXTEDIT_OCR_RECOVERY_BUDGET: "${TEXTEDIT_OCR_RECOVERY_BUDGET:-60}"
+      TEXTEDIT_PHOTO_CORRECT: "${TEXTEDIT_PHOTO_CORRECT:-1}"
+      OMP_THREAD_LIMIT: "${OMP_THREAD_LIMIT:-2}"
+    volumes:
+      - inkpatch-data:/data
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/health', timeout=3).read()"
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
+volumes:
+  inkpatch-data:
